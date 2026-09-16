@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlowDesk Salon — Book an appointment</title>
+<meta name="description" content="GlowDesk Salon — colour, cuts &amp; styling, nails &amp; beauty. Check real-time availability and book online in under a minute.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#140D18;
+    --ink-2:#1B1120;
+    --surface:#1F1424;
+    --surface-2:#2A1B33;
+    --line: rgba(244,236,231,0.10);
+    --line-strong: rgba(244,236,231,0.18);
+    --ivory:#F4ECE7;
+    --muted:#B3A1B0;
+    --gold:#E7B75F;
+    --rose:#E2789A;
+    --mint:#7FE7C4;
+    --danger:#E88A8A;
+    --shadow: 0 30px 60px -20px rgba(0,0,0,0.55);
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--ivory);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--rose); color:var(--ink); }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; margin:0; letter-spacing:-0.01em; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{ content:''; width:22px; height:1px; background:var(--gold); display:inline-block; }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- ambient background ---------- */
+  .glow-field{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .blob{ position:absolute; border-radius:50%; filter:blur(90px); opacity:0.30; animation: drift 30s ease-in-out infinite; }
+  .blob.b1{ width:520px; height:520px; background:var(--rose); top:-160px; left:-120px; }
+  .blob.b2{ width:460px; height:460px; background:var(--mint); top:20%; right:-160px; opacity:0.13; animation-duration:34s; animation-delay:-8s; }
+  .blob.b3{ width:400px; height:400px; background:var(--gold); bottom:-140px; left:30%; opacity:0.18; animation-duration:24s; animation-delay:-4s; }
+  @keyframes drift{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    33%{ transform:translate(40px,50px) scale(1.08); }
+    66%{ transform:translate(-30px,20px) scale(0.96); }
+  }
+  .grain{
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  section, header, footer{ position:relative; z-index:2; }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:60;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px; backdrop-filter: blur(10px);
+    background:linear-gradient(to bottom, rgba(20,13,24,0.92), rgba(20,13,24,0.65));
+    border-bottom:1px solid var(--line);
+  }
+  .brand{ font-family:'Fraunces', serif; font-weight:600; font-size:19px; letter-spacing:0.01em; }
+  .brand em{ color:var(--rose); font-style:normal; }
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a{ font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.04em; text-decoration:none; color:var(--muted); transition:color .2s ease; }
+  .nav-links a:hover{ color:var(--ivory); }
+  .nav-cta{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.04em;
+    padding:10px 18px; border-radius:100px; text-decoration:none; color:var(--ink);
+    background:linear-gradient(135deg, var(--gold), var(--rose)); font-weight:600;
+  }
+  .nav-mobile-toggle{ display:none; }
+
+  /* ---------- hero ---------- */
+  .hero{ min-height:88svh; display:flex; flex-direction:column; justify-content:center; padding-top:120px; padding-bottom:60px; }
+  .hero .wrap{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center; }
+  .hero-copy{ display:flex; flex-direction:column; align-items:flex-start; }
+  .hero h1{ font-size:clamp(38px, 6.4vw, 72px); line-height:1.02; color:var(--ivory); }
+  .hero h1 em{ font-style:italic; font-weight:500; color:var(--rose); }
+  .hero p.sub{ max-width:540px; font-size:18px; line-height:1.6; color:var(--muted); margin-top:22px; }
+  .hero-ctas{ display:flex; gap:14px; margin-top:36px; flex-wrap:wrap; }
+  .hero-media{ position:relative; border-radius:26px; overflow:hidden; aspect-ratio:4/5; box-shadow:var(--shadow); border:1px solid var(--line-strong); }
+  .hero-media img{ width:100%; height:100%; object-fit:cover; display:block; animation:kenburns 18s ease-in-out infinite alternate; }
+  .hero-media::after{ content:''; position:absolute; inset:0; background:linear-gradient(155deg, rgba(20,13,24,0.15), rgba(20,13,24,0.55) 60%, rgba(226,120,154,0.35)); mix-blend-mode:multiply; }
+  .hero-media::before{ content:''; position:absolute; inset:0; background:linear-gradient(155deg, rgba(231,183,95,0.22), rgba(127,231,196,0.10)); mix-blend-mode:color; z-index:1; }
+  .hero-media-badge{ position:absolute; bottom:16px; left:16px; z-index:2; font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.06em; color:var(--ivory); background:rgba(20,13,24,0.55); backdrop-filter:blur(6px); border:1px solid var(--line-strong); padding:7px 12px; border-radius:100px; }
+  @keyframes kenburns{ 0%{ transform:scale(1) translate(0,0); } 100%{ transform:scale(1.12) translate(-1.5%, -1.5%); } }
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.04em;
+    padding:14px 24px; border-radius:100px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .25s ease, box-shadow .25s ease; border:none; cursor:pointer;
+  }
+  .btn-primary{ background:linear-gradient(135deg, var(--gold), var(--rose)); color:var(--ink); font-weight:600; }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 12px 30px -10px rgba(231,183,95,0.5); }
+  .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; transform:none; box-shadow:none; }
+  .btn-ghost{ border:1px solid var(--line-strong); color:var(--ivory); background:transparent; }
+  .btn-ghost:hover{ border-color:var(--mint); color:var(--mint); }
+  .trust-row{ display:flex; gap:22px; margin-top:44px; flex-wrap:wrap; }
+  .trust-item{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+  .trust-dot{ width:7px; height:7px; border-radius:50%; background:var(--mint); box-shadow:0 0 8px var(--mint); }
+
+  /* ---------- section shells ---------- */
+  .section{ padding:100px 0; }
+  .section-head{ max-width:640px; margin-bottom:52px; }
+  .section-head h2{ font-size:clamp(28px, 3.8vw, 42px); color:var(--ivory); }
+  .section-head p{ color:var(--muted); font-size:16px; line-height:1.6; margin-top:14px; }
+
+  /* ---------- stylists ---------- */
+  .stylist-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:22px; }
+  .stylist-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:20px; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .stylist-photo{ position:relative; aspect-ratio:5/4; overflow:hidden; }
+  .stylist-photo img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease; }
+  .stylist-card:hover .stylist-photo img{ transform:scale(1.06); }
+  .stylist-photo::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,13,24,0.05), rgba(20,13,24,0.85)); }
+  .stylist-photo::before{ content:''; position:absolute; inset:0; background:linear-gradient(155deg, rgba(231,183,95,0.20), rgba(226,120,154,0.16)); mix-blend-mode:color; z-index:1; }
+  .stylist-avatar{
+    position:absolute; bottom:14px; left:16px; z-index:2;
+    width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-size:17px; font-weight:600; color:var(--ink);
+    background:linear-gradient(135deg, var(--gold), var(--rose));
+  }
+  .stylist-body{ padding:20px 24px 26px; display:flex; flex-direction:column; gap:8px; }
+  .stylist-card h3{ font-size:21px; color:var(--ivory); }
+  .stylist-role{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mint); }
+  .stylist-card p{ font-size:14.5px; line-height:1.55; color:var(--muted); margin:4px 0 0; }
+
+  /* ---------- booking tabs ---------- */
+  .book-tabs{ display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap; }
+  .tab-btn{
+    padding:11px 18px; border-radius:100px; border:1px solid var(--line-strong); background:transparent;
+    color:var(--muted); font-family:'IBM Plex Mono', monospace; font-size:12.5px; cursor:pointer; transition:all .2s ease;
+  }
+  .tab-btn.active{ background:linear-gradient(135deg, var(--gold), var(--rose)); color:var(--ink); border-color:transparent; font-weight:600; }
+  .quick-copy{ font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:18px; }
+  .slot-stylist-tag{ display:block; font-size:10px; opacity:0.75; margin-top:2px; }
+
+  /* ---------- services / pricing ---------- */
+  .price-note{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--gold);
+    border:1px dashed rgba(231,183,95,0.4); border-radius:12px; padding:10px 16px; margin-bottom:36px; display:inline-block;
+  }
+  .service-groups{ display:flex; flex-direction:column; gap:36px; }
+  .service-group h3{ font-size:19px; color:var(--ivory); display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .service-group h3 .role-tag{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--rose); border:1px solid rgba(226,120,154,0.35); padding:4px 10px; border-radius:100px; }
+  .service-list{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
+  .service-row{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:16px 18px; border:1px solid var(--line); border-radius:14px; background:var(--surface);
+  }
+  .service-row .svc-name{ font-size:14.5px; color:var(--ivory); }
+  .service-row .svc-dur{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted); margin-top:3px; }
+  .service-row .svc-price{ font-family:'IBM Plex Mono', monospace; font-size:15px; color:var(--gold); font-weight:600; white-space:nowrap; }
+
+  /* ---------- booking ---------- */
+  .booking-shell{
+    background:linear-gradient(155deg, var(--surface), var(--ink-2));
+    border:1px solid var(--line); border-radius:26px; padding:44px; box-shadow:var(--shadow);
+  }
+  .book-progress{ display:flex; gap:8px; margin-bottom:32px; }
+  .book-progress .dot{ height:3px; flex:1; border-radius:3px; background:var(--line-strong); transition:background .3s ease; }
+  .book-progress .dot.active{ background:linear-gradient(90deg, var(--gold), var(--rose)); }
+  .field{ margin-bottom:20px; }
+  .field label{ display:block; font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .field select, .field input{
+    width:100%; padding:13px 16px; border-radius:12px; border:1px solid var(--line-strong);
+    background:var(--ink-2); color:var(--ivory); font-size:14.5px; font-family:'Inter', sans-serif;
+    outline:none; transition:border-color .2s ease;
+  }
+  .field select:focus, .field input:focus{ border-color:var(--gold); }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .slots-wrap{ display:flex; flex-wrap:wrap; gap:10px; margin-top:6px; }
+  .slot-btn{
+    padding:11px 16px; border-radius:100px; border:1px solid var(--line-strong); background:var(--ink-2);
+    color:var(--ivory); font-family:'IBM Plex Mono', monospace; font-size:13px; cursor:pointer; transition:all .2s ease;
+  }
+  .slot-btn:hover{ border-color:var(--mint); color:var(--mint); }
+  .slot-btn.selected{ background:linear-gradient(135deg, var(--gold), var(--rose)); color:var(--ink); border-color:transparent; font-weight:600; }
+  .slot-empty{ font-size:14px; color:var(--muted); font-style:italic; }
+  .booking-msg{ font-size:13.5px; padding:12px 16px; border-radius:12px; margin-top:16px; display:none; }
+  .booking-msg.show{ display:block; }
+  .booking-msg.info{ background:rgba(127,231,196,0.08); border:1px solid rgba(127,231,196,0.3); color:var(--mint); }
+  .booking-msg.error{ background:rgba(232,138,138,0.08); border:1px solid rgba(232,138,138,0.35); color:var(--danger); }
+  .confirm-summary{ background:var(--ink-2); border:1px solid var(--line-strong); border-radius:16px; padding:22px; margin-bottom:20px; }
+  .confirm-summary .row{ display:flex; justify-content:space-between; font-size:14px; padding:6px 0; border-bottom:1px solid var(--line); }
+  .confirm-summary .row:last-child{ border-bottom:none; }
+  .confirm-summary .row .k{ color:var(--muted); font-family:'IBM Plex Mono', monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; }
+  .confirm-summary .row .v{ color:var(--ivory); font-weight:500; }
+  .success-panel{ text-align:center; padding:20px 0; }
+  .success-icon{ width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--mint)); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:26px; }
+  .spinner{ width:16px; height:16px; border-radius:50%; border:2px solid rgba(20,13,24,0.3); border-top-color:var(--ink); display:inline-block; animation:spin .7s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- footer ---------- */
+  footer{ padding:70px 0 50px; border-top:1px solid var(--line); }
+  .footer-grid{ display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:32px; }
+  footer h3{ font-size:clamp(24px,3.6vw,32px); max-width:460px; line-height:1.15; }
+  .footer-info{ display:flex; flex-direction:column; gap:8px; font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--muted); }
+  .foot-note{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--muted); margin-top:40px; opacity:0.7; }
+
+  /* ---------- chat widget ---------- */
+  .chat-launcher{
+    position:fixed; bottom:26px; right:26px; z-index:100;
+    display:flex; align-items:center; gap:10px; padding:14px 20px; border-radius:100px;
+    background:linear-gradient(135deg, var(--gold), var(--rose)); color:var(--ink); border:none; cursor:pointer;
+    font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:600; box-shadow:0 16px 34px -12px rgba(226,120,154,0.55);
+    transition:transform .2s ease;
+  }
+  .chat-launcher:hover{ transform:translateY(-2px); }
+  .chat-launcher .pulse{ width:8px; height:8px; border-radius:50%; background:var(--ink); opacity:0.7; animation:pulseDot 1.6s ease-in-out infinite; }
+  @keyframes pulseDot{ 0%,100%{ opacity:0.4; } 50%{ opacity:1; } }
+
+  .chat-panel{
+    position:fixed; bottom:26px; right:26px; z-index:100; width:380px; max-width:calc(100vw - 40px);
+    height:560px; max-height:calc(100vh - 60px); background:var(--surface); border:1px solid var(--line-strong);
+    border-radius:22px; box-shadow:var(--shadow); display:none; flex-direction:column; overflow:hidden;
+  }
+  .chat-panel.open{ display:flex; }
+  .chat-head{ padding:18px 20px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; background:var(--ink-2); }
+  .chat-head-left{ display:flex; align-items:center; gap:10px; }
+  .chat-dot{ width:9px; height:9px; border-radius:50%; background:var(--mint); box-shadow:0 0 10px var(--mint); }
+  .chat-head-title{ font-family:'Fraunces', serif; font-size:15px; font-weight:600; }
+  .chat-head-sub{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--muted); }
+  .chat-close{ background:none; border:none; color:var(--muted); font-size:18px; cursor:pointer; line-height:1; padding:4px; }
+  .chat-close:hover{ color:var(--ivory); }
+
+  .chat-mode-toggle{ display:flex; gap:0; padding:12px 16px; border-bottom:1px solid var(--line); }
+  .mode-btn{
+    flex:1; padding:9px 10px; border:1px solid var(--line-strong); background:transparent; color:var(--muted);
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; cursor:pointer; transition:all .2s ease;
+  }
+  .mode-btn:first-child{ border-radius:8px 0 0 8px; border-right:none; }
+  .mode-btn:last-child{ border-radius:0 8px 8px 0; }
+  .mode-btn.active{ background:rgba(231,183,95,0.12); color:var(--gold); border-color:rgba(231,183,95,0.4); }
+
+  .chat-banner{
+    margin:12px 16px 0; padding:9px 12px; border-radius:10px; font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px; line-height:1.5; background:rgba(127,231,196,0.08); border:1px solid rgba(127,231,196,0.25); color:var(--mint);
+  }
+  .chat-banner.live{ background:rgba(226,120,154,0.08); border-color:rgba(226,120,154,0.3); color:var(--rose); }
+
+  .chat-stream{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+  .bubble{ max-width:82%; padding:11px 15px; border-radius:16px; font-size:13.5px; line-height:1.5; opacity:0; transform:translateY(8px); }
+  .bubble.show{ animation: bubblein .4s ease forwards; }
+  @keyframes bubblein{ to{ opacity:1; transform:translateY(0); } }
+  .bubble.client{ align-self:flex-end; background:var(--surface-2); border:1px solid var(--line-strong); border-bottom-right-radius:4px; }
+  .bubble.ai{ align-self:flex-start; background:linear-gradient(135deg, rgba(231,183,95,0.16), rgba(226,120,154,0.10)); border:1px solid rgba(231,183,95,0.3); border-bottom-left-radius:4px; }
+  .bubble.system{ align-self:center; font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--mint); background:rgba(127,231,196,0.08); border:1px solid rgba(127,231,196,0.25); border-radius:100px; padding:6px 14px; }
+  .bubble.err{ align-self:center; font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--danger); background:rgba(232,138,138,0.08); border:1px solid rgba(232,138,138,0.3); border-radius:12px; }
+  .typing{ align-self:flex-start; display:flex; gap:5px; padding:11px 15px; opacity:0; }
+  .typing.show{ animation:bubblein .3s ease forwards; }
+  .typing span{ width:6px; height:6px; border-radius:50%; background:var(--muted); animation:blink 1.2s infinite ease-in-out; }
+  .typing span:nth-child(2){ animation-delay:0.2s; }
+  .typing span:nth-child(3){ animation-delay:0.4s; }
+  @keyframes blink{ 0%,80%,100%{ opacity:0.25; } 40%{ opacity:1; } }
+
+  .chat-input-row{ display:flex; gap:8px; padding:14px 16px; border-top:1px solid var(--line); }
+  .chat-input-row input{
+    flex:1; padding:11px 14px; border-radius:100px; border:1px solid var(--line-strong);
+    background:var(--ink-2); color:var(--ivory); font-size:13px; outline:none;
+  }
+  .chat-input-row input:focus{ border-color:var(--gold); }
+  .chat-send{
+    width:40px; height:40px; border-radius:50%; border:none; background:linear-gradient(135deg, var(--gold), var(--rose));
+    color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700;
+    flex-shrink:0;
+  }
+  .chat-send:disabled{ opacity:0.4; cursor:not-allowed; }
+  .chat-cap-note{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); text-align:center; padding:0 16px 12px; }
+
+  @media (max-width:900px){
+    .stylist-grid{ grid-template-columns:1fr; }
+    .service-list{ grid-template-columns:1fr; }
+    .field-row{ grid-template-columns:1fr; }
+    .nav-links{ display:none; }
+    .booking-shell{ padding:28px 22px; }
+    .chat-panel{ right:14px; bottom:14px; width:calc(100vw - 28px); }
+    .chat-launcher{ right:14px; bottom:14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-field" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav>
+  <div class="brand">GlowDesk <em>Salon</em></div>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#stylists">Stylists</a>
+    <a href="#book">Book</a>
+  </div>
+  <a class="nav-cta" href="#book">Book now</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <div class="eyebrow">Colour · Cuts &amp; styling · Nails &amp; beauty</div>
+      <h1>Book your <em>appointment</em><br>in under a minute.</h1>
+      <p class="sub">Pick a service, pick a stylist, see real open times, and confirm — no calls, no waiting on a reply. Available around the clock.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#book">Check availability &amp; book →</a>
+        <a class="btn btn-ghost" href="#services">See services &amp; pricing</a>
+      </div>
+      <div class="trust-row">
+        <div class="trust-item"><span class="trust-dot"></span> Real-time slot availability</div>
+        <div class="trust-item"><span class="trust-dot"></span> Conflict-safe booking</div>
+        <div class="trust-item"><span class="trust-dot"></span> Chat with us anytime, bottom right</div>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img src="https://images.unsplash.com/photo-1634449571017-5fecfd26ad76?fm=jpg&amp;q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Stylist styling a client's hair at GlowDesk Salon" loading="eager">
+      <div class="hero-media-badge">GlowDesk · today</div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= STYLISTS ================= -->
+<section class="section" id="stylists">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Meet the team</div>
+      <h2>Three specialists, one shared calendar.</h2>
+      <p>Choose someone by name, or tell us the service and we'll suggest who's free first.</p>
+    </div>
+    <div class="stylist-grid">
+      <div class="stylist-card">
+        <div class="stylist-photo">
+          <img src="https://images.unsplash.com/photo-1595475884562-073c30d45670?fm=jpg&amp;q=75&amp;w=800&amp;auto=format&amp;fit=crop" alt="Colour tools and tinting brush" loading="lazy">
+          <div class="stylist-avatar">P</div>
+        </div>
+        <div class="stylist-body">
+          <h3>Priya</h3>
+          <div class="stylist-role">Colour specialist</div>
+          <p>Balayage, colour correction, and everything from root touch-ups to full transformations.</p>
+        </div>
+      </div>
+      <div class="stylist-card">
+        <div class="stylist-photo">
+          <img src="https://images.unsplash.com/photo-1634449571017-5fecfd26ad76?fm=jpg&amp;q=75&amp;w=800&amp;auto=format&amp;fit=crop" alt="Stylist styling a client's hair" loading="lazy">
+          <div class="stylist-avatar">S</div>
+        </div>
+        <div class="stylist-body">
+          <h3>Sara</h3>
+          <div class="stylist-role">Cuts &amp; styling</div>
+          <p>Precision cuts, blow-dry finishes, and styling for everyday looks and events.</p>
+        </div>
+      </div>
+      <div class="stylist-card">
+        <div class="stylist-photo">
+          <img src="https://images.unsplash.com/photo-1457972729786-0411a3b2b626?fm=jpg&amp;q=75&amp;w=800&amp;auto=format&amp;fit=crop" alt="Manicure in progress" loading="lazy">
+          <div class="stylist-avatar">A</div>
+        </div>
+        <div class="stylist-body">
+          <h3>Anu</h3>
+          <div class="stylist-role">Nails &amp; beauty</div>
+          <p>Manicures, pedicures, and threading &amp; waxing, done with an unhurried hand.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES / PRICING ================= -->
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Services &amp; pricing</div>
+      <h2>Every price, up front.</h2>
+      <p>Grouped by specialist. Exact timing may vary slightly by hair length or nail condition.</p>
+    </div>
+    <div class="service-groups" id="serviceGroups"><!-- populated by JS from SERVICES data --></div>
+  </div>
+</section>
+
+<!-- ================= BOOKING ================= -->
+<section class="section" id="book">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Book an appointment</div>
+      <h2>Pick a service, see what's actually open.</h2>
+      <p>Every slot shown here is checked against our live calendar the moment you ask — the same calendar our chat receptionist uses, so nothing double-books.</p>
+    </div>
+
+    <div class="booking-shell">
+      <div class="book-progress">
+        <div class="dot active" data-step-dot="1"></div>
+        <div class="dot" data-step-dot="2"></div>
+        <div class="dot" data-step-dot="3"></div>
+      </div>
+
+      <!-- STEP 1: choose service / stylist / date -->
+      <div id="bookStep1">
+        <div class="book-tabs">
+          <button class="tab-btn active" id="tabGuided" type="button">I know what I want</button>
+          <button class="tab-btn" id="tabQuick" type="button">Just get me in, ASAP</button>
+        </div>
+
+        <div id="guidedFields">
+          <div class="field">
+            <label for="svcSelect">Service</label>
+            <select id="svcSelect"><option value="">Choose a service…</option></select>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="stylistSelect">Stylist</label>
+              <select id="stylistSelect">
+                <option value="">No preference — suggest one</option>
+                <option value="Priya">Priya — Colour specialist</option>
+                <option value="Sara">Sara — Cuts &amp; styling</option>
+                <option value="Anu">Anu — Nails &amp; beauty</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="dateInput">Date</label>
+              <input type="date" id="dateInput">
+            </div>
+          </div>
+          <button class="btn btn-primary" id="checkAvailBtn" style="width:100%; justify-content:center;">Check availability</button>
+        </div>
+
+        <div id="quickFields" style="display:none;">
+          <p class="quick-copy">First time here? Tell us the date — we'll check all three stylists and show you the earliest open chair.</p>
+          <div class="field">
+            <label for="quickDateInput">Date</label>
+            <input type="date" id="quickDateInput">
+          </div>
+          <button class="btn btn-primary" id="quickFindBtn" style="width:100%; justify-content:center;">Find next available</button>
+        </div>
+
+        <div class="booking-msg" id="step1Msg"></div>
+      </div>
+
+      <!-- STEP 2: pick a slot -->
+      <div id="bookStep2" style="display:none;">
+        <div class="field">
+          <label>Open times<span id="step2StylistNote" class="mono" style="color:var(--muted); text-transform:none; letter-spacing:0; font-size:12px; display:block; margin-top:4px;"></span></label>
+          <div class="slots-wrap" id="slotsWrap"></div>
+        </div>
+        <div class="field-row" style="margin-top:20px;">
+          <div class="field"><label for="nameInput">Your name</label><input type="text" id="nameInput" placeholder="Full name"></div>
+          <div class="field"><label for="phoneInput">Phone</label><input type="tel" id="phoneInput" placeholder="Mobile number"></div>
+        </div>
+        <div class="field">
+          <label for="emailInput">Email</label>
+          <input type="email" id="emailInput" placeholder="you@example.com">
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button class="btn btn-ghost" id="backToStep1">← Change service/date</button>
+          <button class="btn btn-primary" id="toConfirmBtn" style="flex:1; justify-content:center;" disabled>Continue</button>
+        </div>
+        <div class="booking-msg" id="step2Msg"></div>
+      </div>
+
+      <!-- STEP 3: confirm -->
+      <div id="bookStep3" style="display:none;">
+        <div class="confirm-summary" id="confirmSummary"></div>
+        <div style="display:flex; gap:12px;">
+          <button class="btn btn-ghost" id="backToStep2">← Back</button>
+          <button class="btn btn-primary" id="confirmBookBtn" style="flex:1; justify-content:center;">Confirm booking</button>
+        </div>
+        <div class="booking-msg" id="step3Msg"></div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div id="bookSuccess" style="display:none;">
+        <div class="success-panel">
+          <div class="success-icon">✓</div>
+          <h3 style="font-size:22px; margin-bottom:10px;">You're booked.</h3>
+          <p style="color:var(--muted); font-size:14.5px; margin-bottom:26px;" id="successDetail"></p>
+          <button class="btn btn-ghost" id="bookAnotherBtn">Book another appointment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap footer-grid">
+    <div>
+      <h3>GlowDesk Salon — colour, cuts and care, booked the easy way.</h3>
+      <div class="foot-note">SAME CALENDAR POWERS OUR CHAT, BOOKING FORM &amp; REMINDERS</div>
+    </div>
+    <div class="footer-info">
+      <span>📍 14 Ship Street, Brighton, BN1 1AD</span>
+      <span>📞 01273 558 921</span>
+      <span>🕐 Tue–Fri 9:00–19:00 · Sat 9:00–17:00 · Sun–Mon Closed</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= CHAT WIDGET ================= -->
+<button class="chat-launcher" id="chatLauncher"><span class="pulse"></span> Chat with GlowDesk</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <div class="chat-head-left">
+      <span class="chat-dot"></span>
+      <div>
+        <div class="chat-head-title">GlowDesk Receptionist</div>
+        <div class="chat-head-sub" id="chatHeadSub">Preview mode</div>
+      </div>
+    </div>
+    <button class="chat-close" id="chatCloseBtn">✕</button>
+  </div>
+
+  <div class="chat-mode-toggle">
+    <button class="mode-btn active" id="modePreviewBtn">Preview</button>
+    <button class="mode-btn" id="modeLiveBtn">Try it live</button>
+  </div>
+
+  <div class="chat-banner" id="chatBanner">This is a recorded example conversation, on loop — no messages you type here are sent.</div>
+
+  <div class="chat-stream" id="chatStream"></div>
+
+  <div class="chat-input-row" id="chatInputRow" style="display:none;">
+    <input type="text" id="chatInput" placeholder="Ask about prices, hours, or book…" maxlength="300">
+    <button class="chat-send" id="chatSendBtn">→</button>
+  </div>
+  <div class="chat-cap-note" id="chatCapNote" style="display:none;"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* =========================================================
+     CONFIG — replace these with the real production webhook URLs
+     ========================================================= */
+  var CONFIG = {
+    CHECK_AVAILABILITY_URL: 'https://hemanth-autopilot.app.n8n.cloud/webhook/check-availability',
+    BOOK_APPOINTMENT_URL:   'https://hemanth-autopilot.app.n8n.cloud/webhook/book-appointment',
+    // AI Receptionist uses n8n's Chat Trigger, not a plain webhook.
+    AI_RECEPTIONIST_URL:    'https://hemanth-autopilot.app.n8n.cloud/webhook/3c28a964-d684-4340-969f-382fc4c5d592/chat',
+    MAX_LIVE_MESSAGES: 5
+  };
+
+  /* =========================================================
+     SAMPLE DATA — replace SERVICES with real Pricing tab contents
+     ========================================================= */
+  var SERVICES = [
+    { stylist:'Priya', role:'Colour specialist', items:[
+      { name:'Root Touch-up', dur:'60 min', price:'₹450' },
+      { name:'Full Head Colour', dur:'60 min', price:'₹800' }
+    ]},
+    { stylist:'Sara', role:'Cuts & styling', items:[
+      { name:'Hair Cut', dur:'60 min', price:'₹350' },
+      { name:'Blow Dry', dur:'60 min', price:'₹200' },
+      { name:'Keratin Smoothing', dur:'60 min', price:'₹1200' }
+    ]},
+    { stylist:'Anu', role:'Nails & beauty', items:[
+      { name:'Manicure', dur:'45 min', price:'₹550' },
+      { name:'Pedicure', dur:'45 min', price:'₹660' }
+    ]}
+  ];
+
+  /* ---------- render services & populate service dropdown ---------- */
+  var groupsEl = document.getElementById('serviceGroups');
+  var svcSelect = document.getElementById('svcSelect');
+  SERVICES.forEach(function(group){
+    var g = document.createElement('div');
+    g.className = 'service-group';
+    var h = document.createElement('h3');
+    h.innerHTML = group.stylist + ' <span class="role-tag">' + group.role + '</span>';
+    g.appendChild(h);
+    var list = document.createElement('div');
+    list.className = 'service-list';
+    group.items.forEach(function(item){
+      var row = document.createElement('div');
+      row.className = 'service-row';
+      row.innerHTML = '<div><div class="svc-name">'+item.name+'</div><div class="svc-dur">'+item.dur+' · with '+group.stylist+'</div></div><div class="svc-price">'+item.price+'</div>';
+      list.appendChild(row);
+
+      var opt = document.createElement('option');
+      opt.value = JSON.stringify({ name:item.name, stylist:group.stylist, dur:item.dur, price:item.price });
+      opt.textContent = item.name + ' — ' + item.price + ' (' + group.stylist + ')';
+      svcSelect.appendChild(opt);
+    });
+    g.appendChild(list);
+    groupsEl.appendChild(g);
+  });
+
+  /* =========================================================
+     BOOKING FLOW
+     ========================================================= */
+  var dateInput = document.getElementById('dateInput');
+  var today = new Date();
+  dateInput.min = today.toISOString().split('T')[0];
+
+  var step1 = document.getElementById('bookStep1');
+  var step2 = document.getElementById('bookStep2');
+  var step3 = document.getElementById('bookStep3');
+  var successPanel = document.getElementById('bookSuccess');
+  var dots = document.querySelectorAll('[data-step-dot]');
+
+  function setStep(n){
+    step1.style.display = n===1 ? 'block' : 'none';
+    step2.style.display = n===2 ? 'block' : 'none';
+    step3.style.display = n===3 ? 'block' : 'none';
+    successPanel.style.display = n==='success' ? 'block' : 'none';
+    dots.forEach(function(d){
+      d.classList.toggle('active', n!=='success' && parseInt(d.dataset.stepDot,10) <= n);
+    });
+  }
+
+  function showMsg(el, text, type){
+    el.textContent = text;
+    el.className = 'booking-msg show ' + type;
+  }
+  function clearMsg(el){ el.className = 'booking-msg'; el.textContent=''; }
+
+  var selectedService = null;   // { name, stylist(from svc), dur, price }
+  var selectedStylist = null;   // stylist actually chosen for the booking (may be suggested)
+  var selectedDate = null;
+  var selectedSlot = null;
+
+  var checkAvailBtn = document.getElementById('checkAvailBtn');
+  var step1Msg = document.getElementById('step1Msg');
+
+  checkAvailBtn.addEventListener('click', function(){
+    clearMsg(step1Msg);
+    var svcRaw = svcSelect.value;
+    var stylistPick = document.getElementById('stylistSelect').value;
+    var date = dateInput.value;
+
+    if(!svcRaw){ showMsg(step1Msg, 'Pick a service first.', 'error'); return; }
+    if(!date){ showMsg(step1Msg, 'Pick a date first.', 'error'); return; }
+
+    selectedService = JSON.parse(svcRaw);
+    selectedStylist = stylistPick || selectedService.stylist; // fall back to the service's default specialist
+    selectedDate = date;
+
+    checkAvailBtn.disabled = true;
+    checkAvailBtn.innerHTML = '<span class="spinner"></span> Checking…';
+
+    fetchAvailability(selectedStylist, selectedDate)
+      .then(function(slots){
+        checkAvailBtn.disabled = false;
+        checkAvailBtn.textContent = 'Check availability';
+        renderSlots(slots.map(function(t){ return { time:t, stylist:selectedStylist }; }));
+        setStep(2);
+      })
+      .catch(function(err){
+        checkAvailBtn.disabled = false;
+        checkAvailBtn.textContent = 'Check availability';
+        showMsg(step1Msg, err.message || "Couldn't reach the booking system — try again in a moment.", 'error');
+      });
+  });
+
+  /* ---------- QUICK FLOW: "just get me in, ASAP" ---------- */
+  var tabGuided = document.getElementById('tabGuided');
+  var tabQuick = document.getElementById('tabQuick');
+  var guidedFields = document.getElementById('guidedFields');
+  var quickFields = document.getElementById('quickFields');
+  var quickDateInput = document.getElementById('quickDateInput');
+  var quickFindBtn = document.getElementById('quickFindBtn');
+  quickDateInput.min = today.toISOString().split('T')[0];
+
+  tabGuided.addEventListener('click', function(){
+    tabGuided.classList.add('active'); tabQuick.classList.remove('active');
+    guidedFields.style.display = 'block'; quickFields.style.display = 'none';
+    clearMsg(step1Msg);
+  });
+  tabQuick.addEventListener('click', function(){
+    tabQuick.classList.add('active'); tabGuided.classList.remove('active');
+    quickFields.style.display = 'block'; guidedFields.style.display = 'none';
+    clearMsg(step1Msg);
+  });
+
+  var ALL_STYLISTS = ['Priya', 'Sara', 'Anu'];
+
+  quickFindBtn.addEventListener('click', function(){
+    clearMsg(step1Msg);
+    var date = quickDateInput.value;
+    if(!date){ showMsg(step1Msg, 'Pick a date first.', 'error'); return; }
+
+    quickFindBtn.disabled = true;
+    quickFindBtn.innerHTML = '<span class="spinner"></span> Checking everyone\u2019s calendar…';
+
+    var calls = ALL_STYLISTS.map(function(stylist){
+      return fetchAvailability(stylist, date)
+        .then(function(slots){ return slots.map(function(t){ return { time:t, stylist:stylist }; }); })
+        .catch(function(){ return []; }); // one stylist failing shouldn't sink the whole search
+    });
+
+    Promise.all(calls).then(function(results){
+      quickFindBtn.disabled = false;
+      quickFindBtn.textContent = 'Find next available';
+      var combined = [].concat.apply([], results).sort(function(a,b){ return timeToMinutes(a.time) - timeToMinutes(b.time); });
+      selectedService = { name: 'General appointment (any service)', dur:'', price:'' };
+      selectedDate = date;
+      if(combined.length === 0){
+        showMsg(step1Msg, 'Nobody\u2019s free that day — try another date.', 'error');
+        return;
+      }
+      renderSlots(combined.slice(0, 9));
+      setStep(2);
+    });
+  });
+
+  function fetchAvailability(stylist, date){
+    return fetch(CONFIG.CHECK_AVAILABILITY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stylist: stylist, date: date })
+    }).then(function(res){
+      if(!res.ok) throw new Error('Availability check failed (status ' + res.status + ').');
+      return res.json();
+    }).then(function(data){
+      // Workflow 7 returns a list of slots with available: true/false per slot.
+      // Also tolerates a bare array of time strings, just in case.
+      var raw = data.slots || data.available || data.times || (Array.isArray(data) ? data : []);
+      return raw.map(function(item){
+        if(typeof item === 'string') return item;
+        if(item && typeof item === 'object'){
+          if(item.available === false) return null;
+          return item.time || item.slot || item.start || null;
+        }
+        return null;
+      }).filter(Boolean);
+    });
+  }
+
+  // Time helpers — the Stylists tab stores 24h times and sometimes drops the leading zero (9:00 vs 09:00).
+  function padTime(t){
+    var m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+    if(!m) return t;
+    return (m[1].length===1 ? '0'+m[1] : m[1]) + ':' + m[2];
+  }
+  function timeToMinutes(t){
+    var m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+    if(!m) return 99999;
+    return parseInt(m[1],10)*60 + parseInt(m[2],10);
+  }
+  function formatTimeDisplay(t){
+    var m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+    if(!m) return t;
+    var h = parseInt(m[1],10), min = m[2];
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    var h12 = h % 12; if(h12 === 0) h12 = 12;
+    return h12 + ':' + min + ' ' + ampm;
+  }
+
+  var slotsWrap = document.getElementById('slotsWrap');
+  var step2StylistNote = document.getElementById('step2StylistNote');
+  var toConfirmBtn = document.getElementById('toConfirmBtn');
+  var step2Msg = document.getElementById('step2Msg');
+
+  function renderSlots(slots){
+    // slots: array of { time: '14:00', stylist: 'Priya' }
+    slotsWrap.innerHTML = '';
+    selectedSlot = null;
+    toConfirmBtn.disabled = true;
+    step2StylistNote.textContent = selectedService.name +
+      (selectedStylist ? (' with ' + selectedStylist) : '') + ' · ' + formatDate(selectedDate);
+
+    if(!slots || slots.length === 0){
+      var empty = document.createElement('div');
+      empty.className = 'slot-empty';
+      empty.textContent = 'No open times that day — try another date.';
+      slotsWrap.appendChild(empty);
+      return;
+    }
+    slots.forEach(function(slot){
+      var btn = document.createElement('button');
+      btn.className = 'slot-btn';
+      btn.type = 'button';
+      btn.innerHTML = formatTimeDisplay(slot.time) + '<span class="slot-stylist-tag mono">' + slot.stylist + '</span>';
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.slot-btn').forEach(function(b){ b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        selectedSlot = padTime(slot.time);
+        selectedStylist = slot.stylist;
+        step2StylistNote.textContent = selectedService.name + ' with ' + selectedStylist + ' · ' + formatDate(selectedDate);
+        toConfirmBtn.disabled = false;
+      });
+      slotsWrap.appendChild(btn);
+    });
+  }
+
+  function formatDate(d){
+    var dt = new Date(d + 'T00:00:00');
+    return dt.toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' });
+  }
+
+  document.getElementById('backToStep1').addEventListener('click', function(){ setStep(1); });
+
+  toConfirmBtn.addEventListener('click', function(){
+    clearMsg(step2Msg);
+    var name = document.getElementById('nameInput').value.trim();
+    var phone = document.getElementById('phoneInput').value.trim();
+    var email = document.getElementById('emailInput').value.trim();
+    if(!name || !phone || !email){ showMsg(step2Msg, 'Add your name, phone and email to continue.', 'error'); return; }
+    if(!selectedSlot){ showMsg(step2Msg, 'Pick a time slot first.', 'error'); return; }
+
+    renderConfirmSummary(name, phone, email);
+    setStep(3);
+  });
+
+  var confirmSummary = document.getElementById('confirmSummary');
+  function renderConfirmSummary(name, phone, email){
+    confirmSummary.innerHTML =
+      row('Service', selectedService.name) +
+      row('Stylist', selectedStylist) +
+      row('Date', formatDate(selectedDate)) +
+      row('Time', formatTimeDisplay(selectedSlot)) +
+      (selectedService.price ? row('Price', selectedService.price) : '') +
+      row('Name', name) +
+      row('Phone', phone) +
+      row('Email', email);
+    confirmSummary.dataset.name = name;
+    confirmSummary.dataset.phone = phone;
+    confirmSummary.dataset.email = email;
+  }
+  function row(k,v){ return '<div class="row"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'; }
+
+  document.getElementById('backToStep2').addEventListener('click', function(){ setStep(2); });
+
+  var confirmBookBtn = document.getElementById('confirmBookBtn');
+  var step3Msg = document.getElementById('step3Msg');
+
+  confirmBookBtn.addEventListener('click', function(){
+    clearMsg(step3Msg);
+    confirmBookBtn.disabled = true;
+    confirmBookBtn.innerHTML = '<span class="spinner"></span> Booking…';
+
+    var payload = {
+      clientName: confirmSummary.dataset.name,
+      phone: confirmSummary.dataset.phone,
+      email: confirmSummary.dataset.email,
+      service: selectedService.name,
+      stylist: selectedStylist,
+      datetime: selectedDate + ' ' + padTime(selectedSlot)
+    };
+
+    fetch(CONFIG.BOOK_APPOINTMENT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      return res.json().then(function(data){ return { ok: res.ok, data: data }; });
+    }).then(function(result){
+      confirmBookBtn.disabled = false;
+      confirmBookBtn.textContent = 'Confirm booking';
+
+      var success = result.ok && (result.data.success !== false) && (result.data.status !== 'conflict');
+      if(success){
+        document.getElementById('successDetail').textContent =
+          selectedService.name + ' with ' + selectedStylist + ', ' + formatDate(selectedDate) + ' at ' + formatTimeDisplay(selectedSlot) + '.';
+        setStep('success');
+      } else if(result.data && (result.data.status === 'conflict' || result.data.reason === 'conflict')){
+        // Someone else took the slot between check and confirm — refresh and go back to slot picking.
+        showMsg(step3Msg, 'That slot was just taken — pulling fresh times for you.', 'error');
+        setStep(2);
+        fetchAvailability(selectedStylist, selectedDate).then(function(slots){
+          renderSlots(slots.map(function(t){ return { time:t, stylist:selectedStylist }; }));
+        });
+      } else {
+        showMsg(step3Msg, (result.data && result.data.message) || "Couldn't confirm the booking — try again.", 'error');
+      }
+    }).catch(function(){
+      confirmBookBtn.disabled = false;
+      confirmBookBtn.textContent = 'Confirm booking';
+      showMsg(step3Msg, "Couldn't reach the booking system — check your connection and try again.", 'error');
+    });
+  });
+
+  document.getElementById('bookAnotherBtn').addEventListener('click', function(){
+    svcSelect.value = '';
+    document.getElementById('stylistSelect').value = '';
+    dateInput.value = '';
+    quickDateInput.value = '';
+    document.getElementById('nameInput').value = '';
+    document.getElementById('phoneInput').value = '';
+    document.getElementById('emailInput').value = '';
+    tabGuided.click();
+    setStep(1);
+  });
+
+  /* =========================================================
+     CHAT WIDGET — preview (scripted) + live (real webhook) modes
+     ========================================================= */
+  var launcher = document.getElementById('chatLauncher');
+  var panel = document.getElementById('chatPanel');
+  var closeBtn = document.getElementById('chatCloseBtn');
+  var modePreviewBtn = document.getElementById('modePreviewBtn');
+  var modeLiveBtn = document.getElementById('modeLiveBtn');
+  var chatBanner = document.getElementById('chatBanner');
+  var chatStream = document.getElementById('chatStream');
+  var chatInputRow = document.getElementById('chatInputRow');
+  var chatInput = document.getElementById('chatInput');
+  var chatSendBtn = document.getElementById('chatSendBtn');
+  var chatCapNote = document.getElementById('chatCapNote');
+  var chatHeadSub = document.getElementById('chatHeadSub');
+
+  var mode = 'preview'; // 'preview' | 'live'
+  var previewTimer = null;
+
+  launcher.addEventListener('click', function(){
+    panel.classList.add('open');
+    launcher.style.display = 'none';
+    if(mode === 'preview' && !previewTimer) startPreviewLoop();
+  });
+  closeBtn.addEventListener('click', function(){
+    panel.classList.remove('open');
+    launcher.style.display = 'flex';
+  });
+
+  modePreviewBtn.addEventListener('click', function(){ switchMode('preview'); });
+  modeLiveBtn.addEventListener('click', function(){ switchMode('live'); });
+
+  function switchMode(next){
+    if(mode === next) return;
+    mode = next;
+    modePreviewBtn.classList.toggle('active', mode==='preview');
+    modeLiveBtn.classList.toggle('active', mode==='live');
+    chatStream.innerHTML = '';
+
+    if(mode === 'preview'){
+      chatHeadSub.textContent = 'Preview mode';
+      chatBanner.className = 'chat-banner';
+      chatBanner.textContent = 'This is a recorded example conversation, on loop — no messages you type here are sent.';
+      chatInputRow.style.display = 'none';
+      chatCapNote.style.display = 'none';
+      startPreviewLoop();
+    } else {
+      stopPreviewLoop();
+      chatHeadSub.textContent = 'Live — real AI receptionist';
+      chatBanner.className = 'chat-banner live';
+      chatBanner.textContent = "You're talking to our real AI receptionist. Limited to " + CONFIG.MAX_LIVE_MESSAGES + " messages per browser session.";
+      chatInputRow.style.display = 'flex';
+      renderLiveState();
+    }
+  }
+
+  /* ---------- preview (scripted) chat ---------- */
+  var previewScript = [
+    { role:'client', text:"Hi! How much is a full colour, and is Saturday afternoon free?" },
+    { role:'typing' },
+    { role:'ai', text:"A global hair colour with Priya is ₹110, about 2.5 hrs. Saturday 2:00 PM is open — want me to hold it?" },
+    { role:'client', text:"Yes please — Meera Iyer, 98765 43210" },
+    { role:'typing' },
+    { role:'ai', text:"You're booked — Meera, global colour with Priya, Saturday 2:00 PM. See you then ✨" },
+    { role:'system', text:'✓ booking saved — same calendar the site uses' }
+  ];
+
+  function renderBubble(item){
+    if(item.role === 'typing'){
+      var t = document.createElement('div');
+      t.className = 'typing';
+      t.innerHTML = '<span></span><span></span><span></span>';
+      chatStream.appendChild(t);
+      requestAnimationFrame(function(){ t.classList.add('show'); });
+      return t;
+    }
+    var b = document.createElement('div');
+    b.className = 'bubble ' + item.role;
+    b.textContent = item.text;
+    chatStream.appendChild(b);
+    requestAnimationFrame(function(){ b.classList.add('show'); });
+    chatStream.scrollTop = chatStream.scrollHeight;
+    return b;
+  }
+
+  function startPreviewLoop(){
+    if(reduceMotion){
+      chatStream.innerHTML = '';
+      previewScript.filter(function(i){ return i.role !== 'typing'; }).forEach(renderBubble);
+      return;
+    }
+    var cycle = function(){
+      if(mode !== 'preview') return;
+      chatStream.innerHTML = '';
+      var delay = 300;
+      previewScript.forEach(function(item){
+        var isTyping = item.role === 'typing';
+        var stepDelay = isTyping ? 700 : (item.role === 'system' ? 500 : 1100);
+        delay += stepDelay;
+        previewTimer = setTimeout(function(){
+          if(mode !== 'preview') return;
+          if(isTyping){
+            var el = renderBubble(item);
+            setTimeout(function(){ if(el && el.parentNode) el.parentNode.removeChild(el); }, stepDelay - 80);
+          } else {
+            renderBubble(item);
+          }
+        }, delay);
+      });
+      previewTimer = setTimeout(cycle, delay + 2800);
+    };
+    cycle();
+  }
+  function stopPreviewLoop(){
+    if(previewTimer){ clearTimeout(previewTimer); previewTimer = null; }
+  }
+
+  /* ---------- live chat ---------- */
+  var LIVE_COUNT_KEY = 'glowdesk_live_msg_count';
+
+  function getLiveCount(){ return parseInt(sessionStorage.getItem(LIVE_COUNT_KEY) || '0', 10); }
+  function incLiveCount(){ sessionStorage.setItem(LIVE_COUNT_KEY, String(getLiveCount() + 1)); }
+  function remaining(){ return Math.max(0, CONFIG.MAX_LIVE_MESSAGES - getLiveCount()); }
+
+  function renderLiveState(){
+    var used = getLiveCount();
+    var left = remaining();
+    chatCapNote.style.display = 'block';
+    chatCapNote.textContent = left + ' of ' + CONFIG.MAX_LIVE_MESSAGES + ' live messages left this session';
+
+    if(left <= 0){
+      chatInput.disabled = true;
+      chatSendBtn.disabled = true;
+      chatInput.placeholder = "You've used today's live preview — book above, or come back later.";
+      var note = document.createElement('div');
+      note.className = 'bubble err';
+      note.textContent = "You've reached the live preview limit for this session. The booking form above uses the same live calendar.";
+      chatStream.appendChild(note);
+    } else {
+      chatInput.disabled = false;
+      chatSendBtn.disabled = false;
+      chatInput.placeholder = 'Ask about prices, hours, or book…';
+      var greet = document.createElement('div');
+      greet.className = 'bubble ai show';
+      greet.textContent = "Hi! I'm the GlowDesk AI receptionist. Ask me about services, pricing, or a time that works for you.";
+      chatStream.appendChild(greet);
+    }
+  }
+
+  function sendLiveMessage(){
+    var text = chatInput.value.trim();
+    if(!text || remaining() <= 0) return;
+
+    renderBubble({ role:'client', text:text });
+    chatInput.value = '';
+    chatInput.disabled = true;
+    chatSendBtn.disabled = true;
+    var typingEl = renderBubble({ role:'typing' });
+
+    fetch(CONFIG.AI_RECEPTIONIST_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'sendMessage', chatInput: text, sessionId: getSessionId() })
+    }).then(function(res){
+      if(!res.ok) throw new Error('status ' + res.status);
+      return res.json();
+    }).then(function(data){
+      if(typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+      var reply = data.reply || data.output || data.message || "Sorry, I didn't catch that — could you rephrase?";
+      renderBubble({ role:'ai', text: reply });
+      incLiveCount();
+      var left = remaining();
+      chatCapNote.textContent = left + ' of ' + CONFIG.MAX_LIVE_MESSAGES + ' live messages left this session';
+      if(left <= 0){
+        chatInput.placeholder = "You've used today's live preview — book above, or come back later.";
+        chatInput.disabled = true;
+        chatSendBtn.disabled = true;
+      } else {
+        chatInput.disabled = false;
+        chatSendBtn.disabled = false;
+        chatInput.focus();
+      }
+    }).catch(function(){
+      if(typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+      renderBubble({ role:'err', text:"Couldn't reach the receptionist just now — please try again." });
+      chatInput.disabled = false;
+      chatSendBtn.disabled = false;
+    });
+  }
+
+  chatSendBtn.addEventListener('click', sendLiveMessage);
+  chatInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') sendLiveMessage(); });
+
+  function getSessionId(){
+    var key = 'glowdesk_session_id';
+    var id = sessionStorage.getItem(key);
+    if(!id){
+      id = 'web-' + Date.now() + '-' + Math.random().toString(36).slice(2,9);
+      sessionStorage.setItem(key, id);
+    }
+    return id;
+  }
+
+})();
+</script>
+</body>
+</html>
