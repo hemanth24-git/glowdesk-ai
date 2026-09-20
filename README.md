@@ -2,7 +2,7 @@
 
 An 11-workflow AI automation suite built for salons, spas, and clinics — designed to handle the entire front desk on autopilot.
 
-**Live demo:** [(https://index1-hemanth24-gits-projects.vercel.app/)](url)
+**Live demo:** [((https://glowdesk-ai-git-main-hemanth24-gits-projects.vercel.app/))](url)
 
 ## What it does
 
