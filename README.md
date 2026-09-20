@@ -2,7 +2,7 @@
 
 An 11-workflow AI automation suite built for salons, spas, and clinics — designed to handle the entire front desk on autopilot.
 
-**Live demo:** [((https://index1-inky-seven.vercel.app/))](url)
+**Live demo:** (https://index1-inky-seven.vercel.app/)(url)
 
 ## What it does
 
